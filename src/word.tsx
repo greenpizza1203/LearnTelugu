@@ -1,12 +1,21 @@
 import {StyleSheet, Text, View} from "react-native"
 
-export default function ({word}) {
+export function WordForm({form, hidden}) {
+
+    return <View>
+        <Text style={styles.partOfSpeech}>{form.partOfSpeech}</Text>
+        <Text style={[hidden&&{backgroundColor: 'black'}, styles.romanization]}>{form.romanization}</Text>
+        {form.definitions.map((definition, index) => <Text key={index} style={styles.definition}>{definition}</Text>)}
+    </View>
+
+}
+
+
+export default function ({word, hidden}) {
     return (<View style={styles.root}>
         <Text style={styles.teluguWord}>{word.teluguWord}</Text>
-        <Text style={styles.romanization}>{word.romanization}</Text>
-        <Text style={styles.partOfSpeech}>{word.partOfSpeech}</Text>
-        {word.definitions}
-        <Text style={styles.definition}>{word.definition}</Text>
+        {word.forms.map(form => <WordForm hidden={hidden} key={form.partOfSpeech} form={form}/>)}
+
     </View>)
 }
 
@@ -15,15 +24,18 @@ const styles = StyleSheet.create({
     teluguWord: {
         fontSize: 40
     },
+
     romanization: {
-        fontSize: 30
+        fontSize: 20,
+        alignSelf: "flex-start",
+
     },
     partOfSpeech: {
-        color: 'gray',
-        fontSize: 15
+        color: 'black',
+        fontSize: 34
     },
     definition: {
-        // color: 'gray',
+        color: '#4e4e4e',
         fontSize: 15
     }
 })

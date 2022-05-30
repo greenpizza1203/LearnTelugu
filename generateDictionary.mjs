@@ -62,22 +62,26 @@ const url = "https://kaikki.org/dictionary/Telugu/kaikki.org-dictionary-Telugu.j
 
 async function main() {
     const rl = readline.createInterface({input: got.stream(url)});
-    const output = []
+    let output = {}
     rl.on('line', line => {
         let word = JSON.parse(line);
         const teluguWord = word['word'];
         if (!teluguWord) return;
+        const partOfSpeech = word['pos'];
+        if (!partOfSpeech) return;
         const romanization = getRomanization(word)
         if (!romanization) return;
-        // if (romanization !== 'amma') return;
+        // if (romanization !== 'jōka') return;
         let definitions = getDefinitions(word);
 
-        if(!definitions) return;
-        const partOfSpeech = word['pos'];
-        output.push({teluguWord, romanization, partOfSpeech, definitions})
+        if (!definitions) return;
+        if (!output[teluguWord]) output[teluguWord] = {forms:[]}
+        // output[teluguWord].romanization = romanization;
+        output[teluguWord].forms.push({romanization, partOfSpeech, definitions})
     })
     await events.once(rl, 'close')
-
+    output = Object.entries(output).map(([teluguWord, properties]) => ({teluguWord, ...properties}))
+    console.log(output)
     fs.mkdirSync("assets/data", {recursive: true});
     fs.writeFileSync("assets/data/telugu.json", JSON.stringify(output))
     // output.write(']')
