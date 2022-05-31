@@ -1,4 +1,7 @@
-export const independentVowels = {
+import teluguDict from "../assets/data/telugu.json";
+import GraphemeSplitter from "grapheme-splitter";
+
+export const independentVowels: Record<number, string> = {
     0xC05: "A",
     0xC06: "AA",
     0xC07: "I",
@@ -16,7 +19,22 @@ export const independentVowels = {
     0xC14: "AU",
 }
 
-export const consonants = {
+export const dependantVowels: Record<number, string> = {
+    0xC3E: "AA",
+    0xC3F: "I",
+    0xC40: "II",
+    0xC41: "U",
+    0xC42: "UU",
+    0xC43: "VOCALIC R",
+    0xC44: "VOCALIC RR",
+    0xC46: "E",
+    0xC47: "EE",
+    0xC48: "AI",
+    0xC4A: "O",
+    0xC4B: "OO",
+    0xC4C: "AU",
+}
+export const consonants: Record<number, string> = {
     0xC15: "KA",
     0xC16: "KHA",
     0xC17: "GA",
@@ -55,3 +73,36 @@ export const consonants = {
     0xC39: "HA",
 }
 
+const allLetters = {
+    ...independentVowels,
+    ...dependantVowels,
+    ...consonants
+}
+
+
+const reverse = Object.fromEntries(Object.entries(allLetters).map(([key, value]) => [value, +key]));
+
+export function reverseMap(...letters: string[]) {
+    return letters.map(letter => reverse[letter.toUpperCase()]);
+}
+
+interface Word {
+
+}
+
+export function filteredWords(filter: (word: string) => boolean): Word[] {
+    return teluguDict.filter(({teluguWord}) => filter(teluguWord))
+}
+
+
+const splitter = new GraphemeSplitter();
+
+export function countGraphemes(word: string) {
+    return splitter.countGraphemes(word)
+}
+
+const ZWS = String.fromCharCode(0x200B);
+
+export function splitGraphemes(word: string) {
+    return splitter.splitGraphemes(word).map(grapheme => grapheme.split('').join(ZWS)).join(' ')
+}

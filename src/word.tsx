@@ -1,10 +1,11 @@
 import {StyleSheet, Text, View} from "react-native"
+import {splitGraphemes} from "../lib/telugu";
 
 export function WordForm({form, hidden}) {
 
     return <View>
         <Text style={styles.partOfSpeech}>{form.partOfSpeech}</Text>
-        <Text style={[hidden&&{backgroundColor: 'black'}, styles.romanization]}>{form.romanization}</Text>
+        <Text style={[hidden && {backgroundColor: 'black'}, styles.romanization]}>{form.romanization}</Text>
         {form.definitions.map((definition, index) => <Text key={index} style={styles.definition}>{definition}</Text>)}
     </View>
 
@@ -14,13 +15,19 @@ export function WordForm({form, hidden}) {
 export default function ({word, hidden}) {
     return (<View style={styles.root}>
         <Text style={styles.teluguWord}>{word.teluguWord}</Text>
+        <Text style={styles.teluguWord}>{splitGraphemes(word.teluguWord)}</Text>
+
         {word.forms.map(form => <WordForm hidden={hidden} key={form.partOfSpeech} form={form}/>)}
 
     </View>)
 }
 
 const styles = StyleSheet.create({
-    root: {},
+    root: {
+        // flex: 1,
+
+
+    },
     teluguWord: {
         fontSize: 40
     },
@@ -36,6 +43,6 @@ const styles = StyleSheet.create({
     },
     definition: {
         color: '#4e4e4e',
-        fontSize: 15
+        fontSize: 15,
     }
 })

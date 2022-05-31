@@ -3,30 +3,33 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start --dev-client",
-    "android": "expo run:android",
+    "start": "expo start",
+    "android": "expo-cli start",
     "ios": "expo run:ios",
-    "web": "expo start:web",
+    "web": "expo-cli start:web",
+    "build": "eas build -p=android --profile=local --local",
     "eject": "expo eject"
   },
   "dependencies": {
     "expo": "~45.0.0",
+    "expo-splash-screen": "~0.15.1",
+    "expo-status-bar": "~1.3.0",
+    "expo-system-ui": "^1.2.0",
+    "grapheme-splitter": "^1.0.4",
     "random": "^3.0.6",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-native": "0.68.2",
     "react-native-web": "0.17.7",
-    "expo-splash-screen": "~0.15.1",
-    "expo-status-bar": "~1.3.0",
-    "expo-system-ui": "^1.2.0"
+    "expo-updates": "~0.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/react": "~17.0.21",
-    "@types/react-native": "~0.66.13",
-    "typescript": "~4.7.2",
+    "@s types/react-native": "~0.66.13",
+    "clipboardy": "^3.0.0",
     "got": "^12.1.0",
-    "clipboardy": "^3.0.0"
+    "typescript": "~4.7.2"
   },
   "private": true
 }

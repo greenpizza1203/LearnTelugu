@@ -1,33 +1,32 @@
 import * as React from 'react';
 import {useState} from 'react';
-import {Pressable, StyleSheet, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {useFonts} from 'expo-font';
 
-import teluguDict from "./assets/data/telugu.json";
-import {consonants, independentVowels} from "./lib/telugu";
+import {consonants, countGraphemes, filteredWords, independentVowels, reverseMap} from "./lib/telugu";
 import Word from "./src/word";
 import random from "random";
 
-function getDictionary(): { teluguWord: string }[] {
-    return teluguDict
-}
 
 export function App() {
     const [hidden, setHidden] = useState(true)
     const [index, setIndex] = useState(0);
-    const matches = getDictionary().filter(({teluguWord}) => {
-        if(teluguWord.length < 2) return;
-        for (let i = 0; i < teluguWord.length; i++) {
-            const code = teluguWord.charCodeAt(i);
-            if (!(code in independentVowels || code in consonants)) return false;
+    const validAccents = reverseMap("i", "u", "vocalic r", "e", "ai", "o", "au")
+    const matches = filteredWords(word => {
+        const graphemeCount = countGraphemes(word);
+        if (graphemeCount < 2) return;
+
+        for (let i = 0; i < word.length; i++) {
+            const code = word.charCodeAt(i);
+            if (code in independentVowels || code in consonants) continue;
+            if (validAccents.includes(code)) continue;
+            // if (code in dependantVowels) continue;
+            return false;
         }
         return true;
     })
 
-    console.log(teluguDict.length)
-
-
-    return <Pressable onPress={() => {
+    return <Pressable style={styles.other} onPress={() => {
         if (hidden) {
             setHidden(false);
         } else {
@@ -35,7 +34,8 @@ export function App() {
             setIndex(random.int(0, matches.length - 1));
         }
     }}>
-        <View>
+        <View style={styles.app}>
+            <Text>{`#${index + 1}/${matches.length}`}</Text>
             <Word word={matches[index]} hidden={hidden}/>
         </View>
     </Pressable>
@@ -49,7 +49,6 @@ export default function AppContainer() {
     if (!loaded) return null;
     return (
         <View style={styles.container}>
-
             <App/>
         </View>
     );
@@ -58,11 +57,27 @@ export default function AppContainer() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        padding: 5,
-        justifyContent: 'center',
+
+        // backgroundColor: '#fff',
+        alignSelf: 'stretch',
+        // padding: 5,
         fontFamily: 'Nirmala'
     },
+    app: {
+        marginHorizontal: 10,
+        paddingStart: 10,
+        alignSelf: "flex-start"
+    },
+
+    other: {
+        alignSelf: 'stretch',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        // backgroundColor: 'blue'
+
+    }
+
 });
-registerRootComponent(App);
+
