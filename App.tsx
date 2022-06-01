@@ -4,7 +4,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {useFonts} from 'expo-font';
 
 import {consonants, countGraphemes, filteredWords, independentVowels, reverseMap} from "./lib/telugu";
-import Word from "./src/word";
+import Word from "./src/Word";
 import random from "random";
 
 

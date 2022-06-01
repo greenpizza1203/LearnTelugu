@@ -66,22 +66,21 @@ async function main() {
     rl.on('line', line => {
         let word = JSON.parse(line);
         const teluguWord = word['word'];
-        if (!teluguWord) return;
         const partOfSpeech = word['pos'];
-        if (!partOfSpeech) return;
+
         const romanization = getRomanization(word)
         if (!romanization) return;
-        // if (romanization !== 'jōka') return;
-        let definitions = getDefinitions(word);
 
+        let definitions = getDefinitions(word);
         if (!definitions) return;
-        if (!output[teluguWord]) output[teluguWord] = {forms:[]}
+
+        if (!output[teluguWord]) output[teluguWord] = {forms: []}
         // output[teluguWord].romanization = romanization;
         output[teluguWord].forms.push({romanization, partOfSpeech, definitions})
     })
     await events.once(rl, 'close')
     output = Object.entries(output).map(([teluguWord, properties]) => ({teluguWord, ...properties}))
-    console.log(output)
+    // console.log(output)
     fs.mkdirSync("assets/data", {recursive: true});
     fs.writeFileSync("assets/data/telugu.json", JSON.stringify(output))
     // output.write(']')
