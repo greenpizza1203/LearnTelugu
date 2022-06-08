@@ -1,39 +1,6 @@
-import teluguDict from "../assets/data/telugu.json";
+import teluguDict from "../../assets/data/telugu.json";
 import GraphemeSplitter from "grapheme-splitter";
 
-export const independentVowels: Record<number, string> = {
-    0xC05: "A",
-    0xC06: "AA",
-    0xC07: "I",
-    0xC08: "II",
-    0xC09: "U",
-    0xC0A: "UU",
-    0xC0B: "VOCALIC R",
-    0xC0C: "VOCALIC L",
-    0xC0E: "E",
-    0xC0F: "EE",
-    0xC10: "AI",
-    0xC11: "",
-    0xC12: "O",
-    0xC13: "OO",
-    0xC14: "AU",
-}
-
-export const dependantVowels: Record<number, string> = {
-    0xC3E: "AA",
-    0xC3F: "I",
-    0xC40: "II",
-    0xC41: "U",
-    0xC42: "UU",
-    0xC43: "VOCALIC R",
-    0xC44: "VOCALIC RR",
-    0xC46: "E",
-    0xC47: "EE",
-    0xC48: "AI",
-    0xC4A: "O",
-    0xC4B: "OO",
-    0xC4C: "AU",
-}
 export const consonants: Record<number, string> = {
     0xC15: "KA",
     0xC16: "KHA",
@@ -73,6 +40,39 @@ export const consonants: Record<number, string> = {
     0xC39: "HA",
 }
 
+export const independentVowels: Record<number, string> = {
+    0xC05: "A",
+    0xC06: "AA",
+    0xC07: "I",
+    0xC08: "II",
+    0xC09: "U",
+    0xC0A: "UU",
+    0xC0B: "VOCALIC R",
+    0xC0C: "VOCALIC L",
+    0xC0E: "E",
+    0xC0F: "EE",
+    0xC10: "AI",
+    // 0xC11: "",
+    0xC12: "O",
+    0xC13: "OO",
+    0xC14: "AU",
+}
+export const dependantVowels: Record<number, string> = {
+    0xC3E: "AA",
+    0xC3F: "I",
+    0xC40: "II",
+    0xC41: "U",
+    0xC42: "UU",
+    0xC43: "VOCALIC R",
+    0xC44: "VOCALIC RR",
+    0xC46: "E",
+    0xC47: "EE",
+    0xC48: "AI",
+    0xC4A: "O",
+    0xC4B: "OO",
+    0xC4C: "AU",
+}
+
 const allLetters = {
     ...independentVowels,
     ...dependantVowels,
@@ -87,13 +87,21 @@ export function reverseMap(...letters: string[]) {
 }
 
 interface Word {
+    teluguWord: string,
 
 }
 
-export function filteredWords(filter: (word: string) => boolean): Word[] {
+export function filterByWord(filter: (word: string) => boolean): Word[] {
     return teluguDict.filter(({teluguWord}) => filter(teluguWord))
 }
 
+export function filterByCharacters(filter: (char: string) => boolean): Word[] {
+    return teluguDict.filter(({teluguWord}) => {
+        for (const char of teluguWord) if (!filter(char)) return false;
+        return true;
+    })
+
+}
 
 const splitter = new GraphemeSplitter();
 

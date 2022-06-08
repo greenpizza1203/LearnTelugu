@@ -59,6 +59,7 @@ function getDefinitions(word) {
 }
 
 const url = "https://kaikki.org/dictionary/Telugu/kaikki.org-dictionary-Telugu.json"
+const data = {}
 
 async function main() {
     const rl = readline.createInterface({input: got.stream(url)});
@@ -66,6 +67,7 @@ async function main() {
     rl.on('line', line => {
         let word = JSON.parse(line);
         const teluguWord = word['word'];
+
         const partOfSpeech = word['pos'];
 
         const romanization = getRomanization(word)
@@ -73,19 +75,20 @@ async function main() {
 
         let definitions = getDefinitions(word);
         if (!definitions) return;
-
+        for (const char of teluguWord) {
+            if (!(char in data)) data[char] = 0
+            data[char]++
+        }
         if (!output[teluguWord]) output[teluguWord] = {forms: []}
-        // output[teluguWord].romanization = romanization;
         output[teluguWord].forms.push({romanization, partOfSpeech, definitions})
     })
     await events.once(rl, 'close')
+    let sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
+    console.log(sortedData)
     output = Object.entries(output).map(([teluguWord, properties]) => ({teluguWord, ...properties}))
     // console.log(output)
     fs.mkdirSync("assets/data", {recursive: true});
     fs.writeFileSync("assets/data/telugu.json", JSON.stringify(output))
-    // output.write(']')
-    // output.close()
-    // await events.once(output, 'close')
 
     console.log('done')
 }
