@@ -114,3 +114,4 @@ const ZWS = String.fromCharCode(0x200B);
 export function splitGraphemes(word: string) {
     return splitter.splitGraphemes(word).map(grapheme => grapheme.split('').join(ZWS)).join(' ')
 }
+

@@ -3,28 +3,11 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {dependantVowels} from "../lib/telugu";
 
 import Checkbox from 'expo-checkbox';
-import useAsyncStorage from "../lib/settings/settings";
+import {useAsyncSettings} from "../lib/settings/settings";
 
 // const reverseDependantVowels = Object.entries(dependantVowels).map(([key, value]) => [value, key]);
 
-export const defaultFormData = {
-    "consonant": false,
-    "vowel-3135": false,
-    "vowel-3147": false,
-    "vowel-3146": false,
-    "vowel-3144": false,
-    "vowel-3143": false,
-    "vowel-3138": false,
-    "vowel-3139": false,
-    "vowel-3140": false,
-    "vowel-3142": false,
-    "vowel-3148": false,
-    "vowel-3137": false,
-    "vowel-3136": false,
-    "vowel-3134": false,
-    "independentVowels": false,
-    "other": false
-}
+
 export function CheckboxWithText({value, onValueChange, children}) {
     return <Pressable style={styles.checkboxWithText} onPress={() => onValueChange(!value)}>
         <Checkbox style={styles.checkbox} value={value}/>
@@ -34,7 +17,7 @@ export function CheckboxWithText({value, onValueChange, children}) {
 
 
 export default function () {
-    const [val, update] = useAsyncStorage('formData', defaultFormData);
+    const [val, update] = useAsyncSettings();
 
     if (!val) return null;
 
@@ -79,7 +62,7 @@ const styles = StyleSheet.create({
     section: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        // justifyContent: 'space-between'
         // alignItems: 'center',
     },
     heading: {
@@ -101,7 +84,7 @@ const styles = StyleSheet.create({
         margin: 8,
     },
     vowelsSection: {
-        flex: 1,
+        // flex: 1,
         flexDirection: "column",
         // flexWrap: "wrap",
         borderWidth: 2,

@@ -1,7 +1,7 @@
 import * as React from "react";
 import {useMemo, useState} from "react";
 import {Button, Pressable, StyleSheet, Text, View} from "react-native";
-import {consonants, filterByCharacters, independentVowels} from "../lib/telugu";
+import {consonants, dependantVowels, filterByCharacters, independentVowels} from "../lib/telugu";
 import random from "random";
 import Word from "../components/Word";
 import {useFocusEffect} from "@react-navigation/native";
@@ -21,10 +21,10 @@ function filterWords(form) {
     if (!form) return null;
     return filterByCharacters(char => {
         const code = char.charCodeAt(0);
-        if (form.consonant && code in consonants) return true;
-        if (form.independentVowels && code in independentVowels) return true;
-        // if (code in independentVowels || code in consonants) return true;
-        return false;
+        if(code in consonants) return form.consonant;
+        if(code in independentVowels) return form.independentVowels;
+        if(code in dependantVowels) return form[`vowel-${code}`]
+        return form.other;
     })
 }
 
@@ -36,15 +36,16 @@ function MainArea() {
 
     // const [form] = useAsyncJson(defaultFormData);
     useFocusEffect( React.useCallback( () => {
-        const data = getSettings().then(() => setFormData(data));
+        getSettings().then((data) => setFormData(data));
+        console.log(formData);
     }, []))
-    // const matches = useMemo(() => filterWords(formData), formData);
+    const matches = useMemo(() => filterWords(formData), [formData]);
     console.log(formData)
-    const matches = filterWords(formData);
+    // const matches = filterWords(formData);
     console.log(matches?.length)
     if (!matches) return null;
     if (matches.length == 0) return <Text>No words match criteria (check settings)</Text>
-
+    if(index >=matches.length) setIndex(0);
     function handlePress() {
         if (hidden) {
             setHidden(false);
@@ -54,13 +55,13 @@ function MainArea() {
         }
     }
 
+
     return <Pressable style={styles.other} onPress={handlePress}>
         <View style={styles.app}>
             <Text>{`#${index + 1}/${matches.length}`}</Text>
             <Word word={matches[index]} hidden={hidden}/>
         </View>
     </Pressable>
-    return null;
 }
 
 const styles = StyleSheet.create({
